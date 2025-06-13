@@ -57,7 +57,7 @@ void get_command(char inputBuffer[], int size, char *args[],int *background)
 			inputBuffer[i] = '\0'; /* Add a null char; make a C string */
 			start = -1;
 			inputBuffer[i-iesc] = '\0'; /* add a null char; make a C string */
-			iesc = 0;
+            iesc = 0;
 			break;
 		case '#':                  /* Comment found */
             if (i>0 && '\\' == inputBuffer[i-1]){
@@ -111,18 +111,21 @@ void get_command(char inputBuffer[], int size, char *args[],int *background)
  * For a valid redirection, a blank space is required before and after
  * redirection operators '<' or '>'.
  **/
-void parse_redirections(char **args,  char **file_in, char **file_out){
+void parse_redirections(char **args,  char **file_in, char **file_out, char **file_ap){
     *file_in = NULL;
     *file_out = NULL;
+	*file_ap = NULL; //Ampliacion (se anade un argumento extra a la funcion)
     char **args_start = args;
     while (*args) {
         int is_in = !strcmp(*args, "<");
         int is_out = !strcmp(*args, ">");
-        if (is_in || is_out) {
+		int is_ap = !strcmp(*args, ">>"); //Ampliacion
+        if (is_in || is_out || is_ap) {
             args++;
             if (*args){
                 if (is_in)  *file_in = *args;
                 if (is_out) *file_out = *args;
+				if(is_ap) *file_ap = *args; //Ampliacion
                 char **aux = args + 1;
                 while (*aux) {
                    *(aux-2) = *aux;
